@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;hasImage&apos; in &apos;Runner.update()&apos; to &apos;hasImageOne&apos;&#x0A;- Original project: &apos;IBInternalAssesment&apos;&#x0A;- Original element: &apos;Runner.update().hasImage&apos;&#x0A;- Renamed element: &apos;hasImage&apos;&#x0A;- Update references to refactored element" description="Rename local variable &apos;hasImage&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;{Runner.java[Runner~update@hasImage!3246!3286!3254!3261!Z!0!false" name="hasImageOne" references="true" stamp="1453739399039" version="1.0"/>
+</session>

@@ -1,0 +1,177 @@
+import java.awt.Color;
+import java.util.ArrayList;
+
+import javax.media.j3d.AmbientLight;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.BoundingSphere;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Canvas3D;
+import javax.media.j3d.DirectionalLight;
+import javax.media.j3d.GeometryArray;
+import javax.media.j3d.Material;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.Texture;
+import javax.media.j3d.Texture2D;
+import javax.media.j3d.TextureAttributes;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.TriangleArray;
+import javax.vecmath.Color3f;
+import javax.vecmath.Color4f;
+import javax.vecmath.GMatrix;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3f;
+
+import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
+import com.sun.j3d.utils.geometry.GeometryInfo;
+import com.sun.j3d.utils.geometry.NormalGenerator;
+import com.sun.j3d.utils.universe.SimpleUniverse;
+
+public class RenderWrapper extends Canvas3D {
+	private static final long serialVersionUID = 1L;
+	private SimpleUniverse universe;
+	private BranchGroup group;
+	private OrbitBehavior orbit;
+	//protected double scaleX, scaleY, scaleZ;
+	private Transform3D scaleXYZ; // should replace scaleX ... Z
+	private Appearance appearance;
+	private TransformGroup tg;
+
+	/**
+	 * 
+	 */
+	public RenderWrapper() {
+		super(SimpleUniverse.getPreferredConfiguration());
+		
+		//set up universe and groups
+		universe = new SimpleUniverse(this);
+		group = new BranchGroup();
+		group.setCapability(BranchGroup.ALLOW_DETACH);
+		tg = new TransformGroup();
+		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		
+		//set up default scale 
+		GMatrix m = new GMatrix(4,4);
+		m.setElement(0, 0, .5);
+		m.setElement(1, 1, .5);
+		m.setElement(2, 2, .5);
+		scaleXYZ= new Transform3D(m);
+
+		//set up viewing platform and orbit (ability to zoom, pan, and rotate)
+		resetOrbit();
+
+		//set up appearance of object
+		appearance = new Appearance();
+		Color3f color = new Color3f(Color.white.darker());
+		Color3f black = new Color3f(0.0f, 0.0f, 0.0f);
+		Texture texture = new Texture2D();
+		TextureAttributes texAttr = new TextureAttributes();
+		texAttr.setTextureMode(TextureAttributes.MODULATE);
+		texture.setBoundaryModeS(Texture.WRAP);
+		texture.setBoundaryModeT(Texture.WRAP);
+		texture.setBoundaryColor(new Color4f(0.0f, 1.0f, 0.0f, 0.0f));
+		Material mat = new Material(color, black, color, black, 70f);
+		mat.setLightingEnable(true);
+		appearance.setTextureAttributes(texAttr);
+		appearance.setMaterial(mat);
+		appearance.setTexture(texture);
+		
+		//set up lighting
+		BranchGroup lights = new BranchGroup();
+		BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0),
+				1000.0);
+		Color3f light1Color = new Color3f(.8f, .8f, .8f);
+		Color3f light2Color = new Color3f(.4f, .4f, .4f);
+		Vector3f light1Direction = new Vector3f(4.0f, -7.0f, -12.0f);
+		Vector3f light2Direction = new Vector3f(-8.0f, 14.0f, 24.0f);
+		DirectionalLight light1 = new DirectionalLight(light1Color,
+				light1Direction);
+		DirectionalLight light2 = new DirectionalLight(light2Color,
+				light2Direction);
+		light1.setInfluencingBounds(bounds);
+		light2.setInfluencingBounds(bounds);
+		lights.addChild(light1);
+		lights.addChild(light2);
+		Color3f ambientColor = new Color3f(.4f, .4f, .4f);
+		AmbientLight ambientLightNode = new AmbientLight(ambientColor);
+		ambientLightNode.setInfluencingBounds(bounds);
+		lights.addChild(ambientLightNode);
+		universe.addBranchGraph(lights);
+		
+		
+	}
+	
+	/**
+	 * resets orbit's zoom, pan, and translate to default values
+	 */
+	public void resetOrbit(){
+		universe.getViewingPlatform().setNominalViewingTransform();
+		orbit = new OrbitBehavior(this);
+		orbit.setSchedulingBounds(new BoundingSphere(
+				new Point3d(0.0, 0.0, 0.0), Double.MAX_VALUE));
+		orbit.setReverseRotate(true);
+		orbit.setReverseTranslate(true);
+		universe.getViewingPlatform().setViewPlatformBehavior(orbit);
+	}
+	
+	/**
+	 * scales the rendered object for the viewer
+	 * @param sX X scale factor  0-1
+	 * @param sY Y scale factor 0-1
+	 * @param sZ Z scale factor 0-1
+	 */
+	public void rescale(double sX, double sY, double sZ){
+		// set-up scale Matrix
+		GMatrix m = new GMatrix(4,4);
+		m.setElement(0, 0, sX);
+		m.setElement(1, 1, sY);
+		m.setElement(2, 2, sZ);
+		scaleXYZ.set(m);
+		
+		tg.setTransform(scaleXYZ);
+	}
+
+	/**
+	 * @param t
+	 */
+	public void render(ArrayList<Triangle> t) {
+		group.detach();
+		group.removeAllChildren();
+
+		TriangleArray triArray = new TriangleArray(t.size() * 3,
+				TriangleArray.COORDINATES);
+		Vector3f[] normals= new Vector3f[t.size()*3];
+
+		for (int i = 0; i < t.size(); i++) {
+			triArray.setCoordinate(3 * i, t.get(i).v1.getPoint3f());
+			triArray.setCoordinate(3 * i + 1, t.get(i).v2.getPoint3f());
+			triArray.setCoordinate(3 * i + 2, t.get(i).v3.getPoint3f());
+			normals[3*i]= new Vector3f(t.get(i).getNormal().getPoint3f());
+			normals[3*i+1]= new Vector3f(t.get(i).getNormal().getPoint3f());
+			normals[3*i+2]= new Vector3f(t.get(i).getNormal().getPoint3f());
+		}
+
+		GeometryInfo geometryInfo = new GeometryInfo(triArray);
+//		geometryInfo.setNormals(normals);
+		NormalGenerator ng = new NormalGenerator();
+		ng.generateNormals(geometryInfo);
+
+		GeometryArray result = geometryInfo.getGeometryArray();
+		Shape3D shape = new Shape3D(result, appearance);
+		
+		tg.removeAllChildren();
+		tg.setTransform(scaleXYZ);
+		tg.addChild(shape);
+		group.addChild(tg);
+		universe.addBranchGraph(group);
+	}
+
+	/**
+	 * 
+	 */
+	public void clearRendering() {
+		if (group != null)
+			group.detach();
+	}
+
+}

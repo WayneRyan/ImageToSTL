@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item value="0" key="org.eclipse.jdt.uiformatter_page.white_space_tab_page.node"/>
+	<item value="60" key="org.eclipse.jdt.ui.codeformatter.line_wrapping_tab_page.preview_line_width"/>
+	<item value="true" key="org.eclipse.jdt.ui.codeformatter.create_profile_dialog.open_edit"/>
+	<item value="C:\Program Files\Java\Java3D\1.5.2\lib\ext" key="org.eclipse.jdt.ui.lastextjar"/>
+	<item value="0" key="org.eclipse.jdt.uiformatter_page.white_space.java_view.inner"/>
+	<item value="8" key="org.eclipse.jdt.uiformatter_page.modify_dialog_tab_page.last_focus_index"/>
+	<item value="1052" key="org.eclipse.jdt.uiformatter_pagemodify_dialog.preferred_height"/>
+	<item value="751" key="org.eclipse.jdt.uiformatter_pagemodify_dialog.preferred_x"/>
+	<item value="24" key="org.eclipse.jdt.uiformatter_pagemodify_dialog.preferred_y"/>
+	<item value="1169" key="org.eclipse.jdt.uiformatter_pagemodify_dialog.preferred_width"/>
+	<item value="6" key="org.eclipse.jdt.uiformatter_pagemodify_dialog.last_focus"/>
+	<item value="1" key="org.eclipse.jdt.uiformatter_page.line_wrapping_tab_page.last_category_index"/>
+	<section name="OptionalMessageDialog.hide.">
+		<item value="true" key="org.eclipse.jdt.ui.typecomment.deprecated"/>
+	</section>
+	<section name="org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart">
+		<item value="true" key="group_libraries"/>
+		<item value="false" key="linkWithEditor"/>
+		<item value="2" key="layout"/>
+		<item value="1" key="rootMode"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;packageExplorer group_libraries=&quot;1&quot; layout=&quot;2&quot; linkWithEditor=&quot;0&quot; rootMode=&quot;1&quot; workingSetName=&quot;Aggregate for window 1449159942931&quot;&gt;&#x0A;&lt;customFilters userDefinedPatternsEnabled=&quot;false&quot;&gt;&#x0A;&lt;xmlDefinedFilters&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.LibraryFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.LocalTypesFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.StaticsFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.pde.ui.ExternalPluginLibrariesFilter1&quot; isEnabled=&quot;true&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.ClosedProjectsFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.NonSharedProjectsFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.NonJavaElementFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.ContainedLibraryFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.CuAndClassFileFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.NonJavaProjectsFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.internal.ui.PackageExplorer.EmptyInnerPackageFilter&quot; isEnabled=&quot;true&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.PackageDeclarationFilter&quot; isEnabled=&quot;true&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.internal.ui.PackageExplorer.EmptyPackageFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.ImportDeclarationFilter&quot; isEnabled=&quot;true&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.FieldsFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.internal.ui.PackageExplorer.HideInnerClassFilesFilter&quot; isEnabled=&quot;true&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.NonPublicFilter&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer_patternFilterId_.*&quot; isEnabled=&quot;true&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.EmptyLibraryContainerFilter&quot; isEnabled=&quot;true&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.pde.ui.BinaryProjectFilter1&quot; isEnabled=&quot;false&quot;/&gt;&#x0A;&lt;child filterId=&quot;org.eclipse.jdt.ui.PackageExplorer.SyntheticMembersFilter&quot; isEnabled=&quot;true&quot;/&gt;&#x0A;&lt;/xmlDefinedFilters&gt;&#x0A;&lt;/customFilters&gt;&#x0A;&lt;/packageExplorer&gt;" key="memento"/>
+	</section>
+	<section name="completion_proposal_size">
+		<item value="618" key="size.x"/>
+		<item value="246" key="size.y"/>
+	</section>
+	<section name="JavaElementSearchActions">
+	</section>
+	<section name="BuildPathsPropertyPage">
+		<item value="2" key="pageIndex"/>
+	</section>
+	<section name="RefactoringWizard.preview">
+		<item value="400" key="height"/>
+		<item value="600" key="width"/>
+	</section>
+	<section name="FatJarPackageWizard">
+		<item value="/home/users/Student/mitz-justenj16/Desktop/STEPHAN INTERNAL ASSESMENT/Product_Runner/Windows64/ImageTo3D.jar" key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION"/>
+		<item value="Runner - IBInternalAssesment" key="FatJarPackageWizardPage.LAUNCH_CONFIGURATION_SELECTION_NAME"/>
+		<item value="/home/users/Student/mitz-justenj16/Desktop/STEPHAN INTERNAL ASSESMENT/Product_Runner/Schmitz-JustenWorkspace/\home\users\Student\mitz-justenj16\Desktop\IBWorkspace.xml" key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION"/>
+		<item value="false" key="FatJarPackageWizardPage.ANTSCRIPT_SAVE"/>
+		<item value="3" key="FatJarPackageWizardPage.LIBRARY_HANDLING"/>
+		<list key="FatJarPackageWizardPage.DESTINATION_NAMES_ID">
+			<item value="/home/users/Student/mitz-justenj16/Desktop/STEPHAN INTERNAL ASSESMENT/Product_Runner/Windows64/ImageTo3D.jar"/>
+			<item value="C:\Users\ustlab\Desktop\Product\Windows64\ImageTo3D.jar"/>
+			<item value="C:\Users\ustlab\Desktop\ImageTo3D.jar"/>
+			<item value="\home\users\Student\mitz-justenj16\Desktop\ImageTo3D.jar"/>
+			<item value="/home/users/Student/mitz-justenj16/Desktop/ImageTo3D.jar"/>
+		</list>
+		<list key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION_HISTORY">
+			<item value="/home/users/Student/mitz-justenj16/Desktop/STEPHAN INTERNAL ASSESMENT/Product_Runner/Schmitz-JustenWorkspace/\home\users\Student\mitz-justenj16\Desktop\IBWorkspace.xml"/>
+			<item value="\home\users\Student\mitz-justenj16\Desktop\IBWorkspace.xml"/>
+			<item value="/home/users/Student/mitz-justenj16/Desktop/IBWorkspace.xml"/>
+			<item value=".xml"/>
+		</list>
+	</section>
+	<section name="NewClassWizardPage">
+		<item value="false" key="create_constructor"/>
+		<item value="true" key="create_unimplemented"/>
+		<item value="false" key="create_main"/>
+	</section>
+	<section name="quick_assist_proposal_size">
+	</section>
+	<section name="RenameInformationPopup">
+	</section>
+	<section name="org.eclipse.ltk.ui.refactoring.settings">
+	</section>
+	<section name="org.eclipse.jdt.internal.ui.text.QuickOutline">
+		<item value="false" key="GoIntoTopLevelTypeAction.isChecked"/>
+		<item value="true" key="org.eclipse.jdt.internal.ui.text.JavaOutlineInformationControlDIALOG_USE_PERSISTED_SIZE"/>
+		<item value="400" key="org.eclipse.jdt.internal.ui.text.JavaOutlineInformationControlDIALOG_WIDTH"/>
+		<item value="340" key="org.eclipse.jdt.internal.ui.text.JavaOutlineInformationControlDIALOG_HEIGHT"/>
+		<item value="false" key="org.eclipse.jdt.internal.ui.text.JavaOutlineInformationControlDIALOG_USE_PERSISTED_LOCATION"/>
+	</section>
+	<section name="NewPackageWizardPage">
+		<item value="false" key="create_package_info_java"/>
+	</section>
+</section>

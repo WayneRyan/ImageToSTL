@@ -1,0 +1,186 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+public class Model extends JPanel implements ActionListener {
+
+	private ArrayList<Triangle> myTriangles = new ArrayList<Triangle>();
+	private Vertex[][][] varr;
+
+	public Model() {
+
+	}
+
+	public void recompute() {
+		myTriangles.clear();
+		varr = new Vertex[Runner.inputFile1.getImageWidth()][Runner.inputFile1
+				.getImageHeight()][2];
+		for (int x = 0; x < varr.length; x++) {
+			for (int y = 0; y < varr[x].length; y++) {
+				varr[x][y][0] = Runner.inputFile1.getVertex(x, y);
+				varr[x][y][1] = Runner.inputFile2.getVertex(x, y);
+			}
+		}
+		System.out.println("Array Initialization Done");
+
+		// // 2) Create all triangles for the top.
+		// for col = 0 to varr.length-2
+		// for row = 0 to varr[0].length-2
+		// Create triangle varr[col][row][0] , varr[col][row+1][0],
+		// varr[col+1][row][0]
+		// Create triangle varr[col][row+1][0] , varr[col+1][row+1][0],
+		// varr[col+1][row][0]
+		// 7) Create all triangles for bottom
+		// Similar to top but replace varr[x][y][0] with [x][y][1] and negate
+		// normals
+		for (int col = 0; col < varr.length - 1; col++) {
+			for (int row = 0; row < varr[col].length - 1; row++) {
+				if(varr[col][row][0].z<=varr[col][row][1].z){
+					varr[col][row][1] = varr[col][row][0];
+				}
+				Triangle temp1,temp2,temp3,temp4;
+				temp1=new Triangle(varr[col][row][0],
+						varr[col][row + 1][0], varr[col + 1][row][0])
+						.negateNormal();
+				temp2 = new Triangle(varr[col][row + 1][0],
+						varr[col + 1][row + 1][0], varr[col + 1][row][0])
+						.negateNormal();
+				
+				
+				
+				temp3= new Triangle(varr[col][row][1],
+						varr[col][row + 1][1], varr[col + 1][row][1]);
+				temp4=new Triangle(varr[col][row + 1][1],
+						varr[col + 1][row + 1][1], varr[col + 1][row][1]);
+				
+				if(!temp1.equals(temp3)){
+					myTriangles.add(temp1);
+					myTriangles.add(temp3);
+				}
+				if(!temp2.equals(temp4)){
+					myTriangles.add(temp2);
+					myTriangles.add(temp4);
+				}
+				
+				//
+			}
+		}
+		System.out.println("top done");
+		System.out.println("bottom done");
+
+		// // 3) Create all triangles for the left.
+		// for row = 0 to varr[0].length-2
+		// Create triangle varr[0][row][1] , varr[0][row+1][1], varr[0][row][0]
+		// Create triangle varr[0][row+1][1] , varr[0][row+1][0],
+		// varr[0][row][0]
+		for (int row = 0; row < varr[0].length - 1; row++) {
+			myTriangles.add(new Triangle(varr[0][row][1], varr[0][row + 1][1],
+					varr[0][row][0]).negateNormal());
+			myTriangles.add(new Triangle(varr[0][row + 1][1],
+					varr[0][row + 1][0], varr[0][row][0]).negateNormal());
+		}
+		System.out.println("left done");
+		// // 4) Create all triangles for the right.
+		// for row = 0 to varr[0].length-2
+		// Create triangle varr[varr.length-1][row][0] ,
+		// varr[varr.length-1][row+1][0], varr[varr.length-1][row][1]
+		// Create triangle varr[varr.length-1][row+1][0] ,
+		// varr[varr.length-1][row+1][1], varr[varr.length-1][row][1]
+		for (int row = 0; row < varr[0].length - 1; row++) {
+			myTriangles.add(new Triangle(varr[varr.length - 1][row][0],
+					varr[varr.length - 1][row + 1][0],
+					varr[varr.length - 1][row][1]).negateNormal());
+			myTriangles.add(new Triangle(varr[varr.length - 1][row + 1][0],
+					varr[varr.length - 1][row + 1][1],
+					varr[varr.length - 1][row][1]).negateNormal());
+		}
+		System.out.println("right done");
+		// // 5) Create all triangles for the front.
+		// for col = 0 to varr.length-2
+		// Create triangle varr[col][varr[0].length-1][0] ,
+		// varr[col][varr[0].length-1][1], varr[col+1][varr[0].length-1][0]
+		// Create triangle varr[col][varr[0].length-1][1] ,
+		// varr[col+1][varr[0].length-1][1], varr[col+1][varr[0].length-1] [0]
+		for (int col = 0; col < varr.length - 1; col++) {
+			myTriangles.add(new Triangle(varr[col][varr[0].length - 1][0],
+					varr[col][varr[0].length - 1][1],
+					varr[col + 1][varr[0].length - 1][0]).negateNormal());
+			myTriangles.add(new Triangle(varr[col][varr[0].length - 1][1],
+					varr[col + 1][varr[0].length - 1][1],
+					varr[col + 1][varr[0].length - 1][0]).negateNormal());
+		}
+		System.out.println("front done");
+		// // 6) Create all triangles for the back.
+		// for col = 0 to varr.length-2
+		// Create triangle varr[col][0][1] , varr[col][0][0], varr[col+1][0][1]
+		// Create triangle varr[col][0][0] , varr[col+1][0][0],
+		// varr[col+1][0][1]
+		for (int col = 0; col < varr.length - 1; col++) {
+			myTriangles.add(new Triangle(varr[col][0][1], varr[col][0][0],
+					varr[col + 1][0][1]).negateNormal());
+			myTriangles.add(new Triangle(varr[col][0][0], varr[col + 1][0][0],
+					varr[col + 1][0][1]).negateNormal());
+		}
+		System.out.println("back done");
+		
+		
+		System.out.println(myTriangles.size());
+
+	}
+
+	public void scale() {
+
+	}
+
+	public String toString() {
+		String output = "solid Model \n";
+		for(int i=0; i<myTriangles.size(); i++){
+			System.out.println(i);
+			output += myTriangles.get(i).toString() + "\n";
+		}
+		output += "endsolid Model";
+		return output;
+	}
+
+	public void paintComponent(Graphics g) {
+		// 3D model
+		g.setColor(Color.BLUE);
+		g.fillRect(0, 0, this.getWidth(), this.getHeight());
+	}
+
+	public void actionPerformed(ActionEvent arg0) {
+		JFileChooser fd = new JFileChooser();
+		fd.setFileFilter(new FileNameExtensionFilter("3D Models", "stl"));
+		fd.showSaveDialog(this);
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(fd.getSelectedFile().getPath()+".stl", "UTF-8");
+			writer.println("solid Model");
+			for(int i=0; i<myTriangles.size(); i++){
+				System.out.println(i);
+				writer.println(myTriangles.get(i).toString());
+			}
+			writer.println("endsolid Model");
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+}

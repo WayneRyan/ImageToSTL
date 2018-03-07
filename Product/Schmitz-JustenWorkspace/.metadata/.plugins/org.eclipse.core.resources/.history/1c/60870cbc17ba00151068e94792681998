@@ -1,0 +1,12 @@
+import org.lwjgl.opengl.*;
+import javax.swing.*;
+import org.lwjgl.system.windows.*;
+
+
+public class TEST extends Object{
+	boolean isCloseResqueted= false;
+	
+	public static void main(String[] args) {
+	}
+
+}

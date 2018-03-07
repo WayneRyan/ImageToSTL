@@ -1,0 +1,122 @@
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+public class InputFile extends JPanel implements ActionListener {
+
+	private static final long serialVersionUID = 1L;
+	private BufferedImage myImage;
+	String path;
+
+	/**
+	 * Precondition: myImage has been initialized
+	 * 
+	 * @return width of myImage
+	 */
+	public int getImageWidth() {
+		if(myImage != null)
+		return myImage.getWidth();
+		return 0;
+	}
+
+	/**
+	 * Precondition: myImage has been initialized
+	 * 
+	 * @return height of myImage
+	 */
+	public int getImageHeight() {
+		return myImage.getHeight();
+	}
+
+	public void setImageNull() {
+		myImage = null;
+	}
+
+	public void paintComponent(Graphics g) {
+		if (myImage == null) {
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+		} else {
+			g.drawImage(myImage, 0, 0, this.getWidth(), this.getHeight(), 0, 0,
+					myImage.getWidth(), myImage.getHeight(), null);
+		}
+	}
+
+	/**
+	 * @return true if myImage has been initialized
+	 */
+	public boolean hasImage() {
+		return myImage != null;
+	}
+
+	/**
+	 * @param x
+	 *            x-coordinate into myImage
+	 * @param y
+	 *            y-coordinate into myImage
+	 * @return Vertex with x & y as passed in and z determined by the
+	 *         corresponding pixel of myImage z==0 whenever x or y are out of
+	 *         bounds
+	 */
+	public Vertex getVertex(int x, int y) {
+		if (myImage != null && x >= 0 && x < myImage.getWidth() && y >= 0
+				&& y < myImage.getHeight()) {
+			Color c = new Color(myImage.getRGB(x, y));
+			int val = c.getRed() + c.getGreen() + c.getBlue();
+			// make the range of z roughly the same as the range of x and y
+			return new Vertex(x, y, (myImage.getWidth() - 1
+					+ myImage.getHeight() - 1)
+					/ 2 * (val / (255.0 * 3.0)));
+		} else {
+			return new Vertex(x, y, 0.0);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * Open file dialog to load image files
+	 */
+	public void actionPerformed(ActionEvent arg0) {
+		Button b = (Button) arg0.getSource();
+		if (b.getLabel().contains("Select")) {
+			JFileChooser fd = new JFileChooser();
+			fd.setFileFilter(new FileNameExtensionFilter("Images", "jpg",
+					"gif", "png", "bmp"));
+			fd.showOpenDialog(this);
+			try {
+				if (fd.getSelectedFile() != null) {
+					path = fd.getSelectedFile().getPath();
+					System.out.println("Path= " + path);
+					myImage = ImageIO.read(fd.getSelectedFile());
+				} else
+					myImage = null;
+			} catch (IOException e1) {
+				myImage = null;
+			}
+		} else if (b.getLabel().contains("Update")) {
+			try {
+				System.out.println(path);
+				myImage = ImageIO.read(new File(path));
+			} catch (IOException e) {
+				myImage = null;
+			}
+
+		}
+		Runner.update();
+		this.getParent().repaint();
+		// TODO add different actions for select and update
+	}
+}

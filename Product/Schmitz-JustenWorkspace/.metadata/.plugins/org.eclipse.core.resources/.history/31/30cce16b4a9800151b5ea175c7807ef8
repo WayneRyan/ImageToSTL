@@ -1,0 +1,86 @@
+import java.awt.Color;
+import java.awt.FileDialog;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+public class InputFile extends JPanel implements ActionListener{
+
+	private BufferedImage myImage;
+
+	public InputFile() {
+
+	}
+	
+	public int getImageWidth(){
+		return myImage.getWidth();
+	}
+	
+	public int getImageHeight(){
+		return myImage.getHeight();
+	}
+
+	public void paintComponent(Graphics g) {
+		if (myImage == null) {
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+		} else {
+			g.drawImage(myImage, 0, 0, this.getWidth(), this.getHeight(), 0, 0,
+					myImage.getWidth(), myImage.getHeight(), null);
+		}
+	}
+	
+	public boolean hasImage(){
+		return myImage != null;
+	}
+	
+	/**
+	 * Precondition - 
+	 * Postcondition - 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public double getValue(int x, int y){
+		if(myImage!=null){
+			Color c = new Color(myImage.getRGB(x, y));
+			int val = c.getRed() + c.getGreen() + c.getBlue();
+			return val / (255.0*3.0); //values will be in range from 0-1
+		}else{
+			return 0.0;
+		}
+	}
+	
+	public Vertex getVertex(int x, int y){
+		if(myImage!=null){
+			Color c = new Color(myImage.getRGB(x, y));
+			int val = c.getRed() + c.getGreen() + c.getBlue();
+			return new Vertex(x,y,(myImage.getWidth()+myImage.getHeight())/2*(val / (255.0*3.0))); 
+		}else{
+			return new Vertex(x,y,0.0);
+		}
+	}
+	
+	
+
+	public void actionPerformed(ActionEvent e) {
+		JFileChooser fd= new JFileChooser();
+		fd.setFileFilter(new FileNameExtensionFilter("Images","jpg","gif","png","bmp"));
+		fd.showOpenDialog(this);
+		try {
+			if(fd.getSelectedFile() != null)
+			myImage = ImageIO.read(fd.getSelectedFile());
+		} catch (IOException e1) {
+
+		}
+		Runner.update();
+		this.getParent().repaint();
+	}
+}

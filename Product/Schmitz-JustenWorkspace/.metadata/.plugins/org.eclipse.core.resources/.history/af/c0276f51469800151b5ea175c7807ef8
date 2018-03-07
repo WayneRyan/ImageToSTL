@@ -1,0 +1,46 @@
+
+public class Triangle {
+	public Vertex v1,v2,v3;
+	public Vertex normal;
+	
+	public Triangle(Vertex v1, Vertex v2, Vertex v3){
+		this.v1=v1;
+		this.v2=v2;
+		this.v3=v3;
+		getNormal();
+		
+	}
+	
+	private  Vertex getNormal(){
+		Vertex v = v2.subtract(v1);
+		Vertex w = v3.subtract(v1);
+		double x = v.y*w.z-v.z*w.y;
+		double y = v.z*w.x-v.x*w.z;
+		double z = v.x*w.y-v.y*w.x;
+		double length= Math.sqrt(x*x+y*y+z*z);
+		x=x/length;
+		y=y/length;
+		z=z/length;
+		normal = new Vertex(x,y,z);
+		return normal;
+	}
+	
+	public Triangle negateNormal(){
+		normal.x=-1*normal.x;
+		normal.y=-1*normal.y;
+		normal.z=-1*normal.z;
+		return this;
+	}
+	
+	public String toString(){
+		String output= "facet normal " + normal.x+ " " + normal.y + " " + normal.z + "\n";
+		output+= "outer loop \n";
+		output+= ""+v1.toString()+ "\n";
+		output+= ""+ v2.toString()+ "\n";
+		output+= ""+v3.toString()+ "\n";
+		output+= "endloop \n";
+		output+= "endfacet";
+		return output;
+	}
+
+}

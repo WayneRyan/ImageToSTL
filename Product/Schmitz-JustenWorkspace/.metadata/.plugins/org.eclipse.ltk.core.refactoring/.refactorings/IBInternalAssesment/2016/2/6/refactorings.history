@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;w&apos; in &apos;Triangle.getNormal()&apos; to &apos;U&apos;&#x0A;- Original project: &apos;IBInternalAssesment&apos;&#x0A;- Original element: &apos;Triangle.getNormal().w&apos;&#x0A;- Renamed element: &apos;w&apos;&#x0A;- Update references to refactored element" description="Rename local variable &apos;w&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;{Triangle.java[Triangle~getNormal@w!417!443!424!424!QVertex;!0!false" name="U" references="true" stamp="1454618027480" version="1.0"/>
+</session>

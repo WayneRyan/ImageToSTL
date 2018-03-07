@@ -1,0 +1,113 @@
+import java.awt.Button;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JSlider;
+
+public class Runner extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	public static final int WIDTH = 800, HEIGHT = 600;
+	private static Button selectImage1, selectImage2, writeOutput;
+	private static Button updateImage1, updateImage2, overwrite;
+	private static JSlider sliderX, sliderY, sliderZ;
+	public static InputFile inputFile1, inputFile2;
+	public static Model myModel;
+
+	public static void main(String[] args) {
+		Runner myRunner = new Runner();
+		myRunner.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		myRunner.setVisible(true);
+	}
+
+	/**
+	 * Sets up the JFrame without a layout manager Adds actionListener to
+	 * buttons
+	 */
+	public Runner() {
+		this.setSize(WIDTH, HEIGHT);
+		this.setResizable(false);
+		this.setLayout(null);
+		selectImage1 = new Button("Select Top Image");
+		selectImage2 = new Button("Select Bottom Image");
+		writeOutput = new Button("Write Output");
+		updateImage1 = new Button("Update Top Image");
+		updateImage2 = new Button("Update Bottom Image");
+		overwrite = new Button("Overwrite Output");
+		
+		sliderX = new JSlider(sliderX.HORIZONTAL, 1, 12, 5);
+		sliderY = new JSlider(sliderX.HORIZONTAL, 1, 12, 6);
+		sliderZ = new JSlider(sliderX.HORIZONTAL, 1, 12, 7);
+
+		sliderX.setBounds(100, 10, 600, 15);
+		this.add(sliderX);
+		
+		sliderY.setBounds(100, 50, 600, 30);
+		this.add(sliderY);
+		
+		sliderZ.setBounds(100, 90, 600, 30);
+		sliderZ.setPaintLabels(true);
+		sliderZ.setMajorTickSpacing(1);
+		this.add(sliderZ);
+		
+		
+		selectImage2.setBounds(320, 120, 150, 20);
+		writeOutput.setBounds(580, 120, 150, 20);
+		updateImage1.setBounds(60, 410, 150, 20);
+		updateImage2.setBounds(320, 410, 150, 20);
+		overwrite.setBounds(580, 410, 150, 20);
+		
+		
+		selectImage2.setEnabled(false);
+		writeOutput.setEnabled(false);
+		updateImage1.setEnabled(false);
+		updateImage2.setEnabled(false);
+		overwrite.setEnabled(false);
+		this.add(selectImage1);
+		this.add(selectImage2);
+		this.add(writeOutput);
+		this.add(updateImage1);
+		this.add(updateImage2);
+		this.add(overwrite);
+
+		inputFile1 = new InputFile();
+		inputFile1.setBounds(10, 150, 250, 250);
+		this.add(inputFile1);
+		selectImage1.addActionListener(inputFile1);
+		updateImage1.addActionListener(inputFile1);
+
+		inputFile2 = new InputFile();
+		inputFile2.setBounds(270, 150, 250, 250);
+		this.add(inputFile2);
+		selectImage2.addActionListener(inputFile2);
+		updateImage2.addActionListener(inputFile2);
+
+
+		myModel = new Model();
+		myModel.setBounds(530, 150, 250, 250);
+		writeOutput.addActionListener(myModel);
+		overwrite.addActionListener(myModel);
+		this.add(myModel);
+	}
+
+	/**
+	 * Enables/Disables buttons as appropriate
+	 */
+	public static void update() {
+		if (!inputFile1.hasImage())
+			inputFile2.setImageNull();
+		selectImage2.setEnabled(inputFile1.hasImage());
+		writeOutput.setEnabled(inputFile1.hasImage());
+		updateImage1.setEnabled(inputFile1.hasImage());
+		updateImage2.setEnabled(inputFile2.hasImage());
+		overwrite.setEnabled(myModel.hasPath());
+		if (inputFile1.hasImage() && inputFile2.hasImage()
+				&& (  inputFile1.getImageHeight() != inputFile2.getImageHeight()
+				|| inputFile1.getImageWidth() != inputFile2.getImageWidth())) {
+			JOptionPane.showMessageDialog(null,
+					"Images have different sizes. Final output may be hard to predict.");
+		}
+		if (inputFile1.hasImage())
+			myModel.recompute();
+
+	}
+}

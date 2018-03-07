@@ -1,0 +1,17 @@
+
+public class Vertex {
+	public double x,y,z;
+	public Vertex(double x, double y, double z){
+		this.x=x;
+		this.y=y;
+		this.z=z;
+	}
+	
+	public String toString(){
+		return "vertex "+ x+ " "+ (Runner.inputFile1.getHeight()-y)+" "+z;
+	}
+	
+	public Vertex subtract( Vertex b){
+		return new Vertex(x-b.x, y-b.y,z-b.z);
+	}
+}

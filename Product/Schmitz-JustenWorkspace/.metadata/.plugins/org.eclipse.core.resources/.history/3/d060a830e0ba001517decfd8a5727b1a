@@ -1,0 +1,49 @@
+import javax.vecmath.Point3f;
+
+
+public class Vertex {
+	
+	//breaking encapsulation, simple container class
+	public double x,y,z;
+	
+	/**
+	 * @param x sets x value
+	 * @param y sets y value
+	 * @param z sets z value
+	 */
+	public Vertex(double x, double y, double z){
+		this.x=x;
+		this.y=y;
+		this.z=z;
+	}
+	
+	public String toString(){
+		return "vertex "+ x+ " "+ y+" "+z;
+	}
+	
+	public Point3f getPoint3f(){
+		return new Point3f((float)x, (float)y, (float)z);
+	}
+	
+	public void normalize(Vertex shift, Vertex scale){
+		x -= shift.x;
+		y -= shift.y;
+		z -= shift.z;
+		x *= shift.x;
+		y *= shift.y;
+		z *= shift.z;
+		x -= .5;
+		y -= .5;
+		z -= .5;
+		
+	}
+	
+	/**
+	 * Postcondition: this and other unmodified
+	 * @param other a valid Vertex 
+	 * @return Vertex with this - other  (Order matters)
+	 */
+	public Vertex subtract( Vertex other){
+		return new Vertex(x-other.x, y-other.y,z-other.z);
+	}
+}

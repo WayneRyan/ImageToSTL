@@ -1,0 +1,392 @@
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
+import javax.media.j3d.AmbientLight;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.BoundingSphere;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Canvas3D;
+import javax.media.j3d.DirectionalLight;
+import javax.media.j3d.GeometryArray;
+import javax.media.j3d.Material;
+import javax.media.j3d.PolygonAttributes;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.Texture;
+import javax.media.j3d.Texture2D;
+import javax.media.j3d.TextureAttributes;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TriangleArray;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.vecmath.Color3f;
+import javax.vecmath.Color4f;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3f;
+
+import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
+import com.sun.j3d.utils.geometry.ColorCube;
+import com.sun.j3d.utils.geometry.GeometryInfo;
+import com.sun.j3d.utils.geometry.NormalGenerator;
+import com.sun.j3d.utils.universe.SimpleUniverse;
+
+/**
+ * @author schmitz-justensj16
+ *
+ */
+/**
+ * @author schmitz-justensj16
+ * 
+ */
+public class Model extends Canvas3D implements ActionListener {
+	SimpleUniverse universe;
+	BranchGroup group;
+	Shape3D shape;
+	private static final long serialVersionUID = 1L;
+	private ArrayList<Triangle> myTriangles = new ArrayList<Triangle>();
+	private String path;
+	private Vertex[][][] varr;
+	
+	public Model() {
+		super(SimpleUniverse.getPreferredConfiguration());
+		universe = new SimpleUniverse(this);
+	}
+	
+	public void clearRendering(){
+		if (group != null)
+			group.detach();
+	}
+
+	/**
+	 * Precondition: Runner.inputFile1 has a valid Image; Postcondition:
+	 * myTrangles is filled with all necessary triangles for the model
+	 * 
+	 * Recomputes the Triangles for the 3D model
+	 * 
+	 */
+	public void recompute() {
+		if (group != null)
+			group.detach();
+		group = new BranchGroup();
+		group.setCapability(BranchGroup.ALLOW_DETACH);
+
+		// Create array to hold all Vertices temporarily
+		Vertex[][][] varr;
+
+		// Discard any previous triangles
+		myTriangles.clear();
+
+		// Create empty array to hold vertex info
+
+		varr = new Vertex[Runner.inputFile1.getImageWidth()][Runner.inputFile1
+				.getImageHeight()][2];
+
+		// fill array with vertex info from images
+		for (int x = 0; x < varr.length; x++) {
+			for (int y = 0; y < varr[x].length; y++) {
+
+				// load from images, 0 indicates top surface, 1 indicates
+				// bottom
+				varr[x][y][0] = Runner.inputFile1.getVertex(x, y);
+				varr[x][y][1] = Runner.inputFile2.getVertex(x, y);
+
+				// If z value for bottom is >= z value of top
+				// Let both share one vertex that is average of the two
+				if (varr[x][y][0].z <= varr[x][y][1].z) {
+
+					Vertex temp = new Vertex(x, y,
+							(varr[x][y][0].z + varr[x][y][1].z) / 2);
+					varr[x][y][1] = temp;
+					varr[x][y][0] = temp;
+				}
+			}
+		}
+
+		// make triangles for top and bottom surfaces
+		for (int col = 0; col < varr.length - 1; col++) {
+			for (int row = 0; row < varr[col].length - 1; row++) {
+
+				// create temporary triangles for top and bottom to allow
+				// for
+				// comparison
+				Triangle temp1, temp2, temp3, temp4;
+				// create triangles for top
+				temp1 = new Triangle(varr[col][row][0], varr[col][row + 1][0],
+						varr[col + 1][row][0]);
+				temp2 = new Triangle(varr[col][row + 1][0],
+						varr[col + 1][row + 1][0], varr[col + 1][row][0]);
+				// create triangles for bottom
+				temp3 = new Triangle(varr[col + 1][row][1],
+						varr[col][row + 1][1], varr[col][row][1]);
+				temp4 = new Triangle(varr[col + 1][row][1],
+						varr[col + 1][row + 1][1], varr[col][row + 1][1]);
+
+				// only add triangles if top and bottom do not share same
+				// vertices
+				if (!temp1.equals(temp3)) {
+					myTriangles.add(temp1);
+					myTriangles.add(temp3);
+				}
+				if (!temp2.equals(temp4)) {
+					myTriangles.add(temp2);
+					myTriangles.add(temp4);
+				}
+			}
+		}
+
+		// make triangles for left surface
+		for (int row = 0; row < varr[0].length - 1; row++) {
+			// add triangles for the left side
+			myTriangles.add(new Triangle(varr[0][row][1], varr[0][row + 1][1],
+					varr[0][row][0]));
+			myTriangles.add(new Triangle(varr[0][row + 1][1],
+					varr[0][row + 1][0], varr[0][row][0]));
+		}
+
+		// make triangles for right surface
+		for (int row = 0; row < varr[0].length - 1; row++) {
+			// add triangles for the right side
+			myTriangles.add(new Triangle(varr[varr.length - 1][row][0],
+					varr[varr.length - 1][row + 1][0],
+					varr[varr.length - 1][row][1]));
+			myTriangles.add(new Triangle(varr[varr.length - 1][row + 1][0],
+					varr[varr.length - 1][row + 1][1],
+					varr[varr.length - 1][row][1]));
+		}
+
+		// make triangles for the front
+		for (int col = 0; col < varr.length - 1; col++) {
+			// add triangles for the front
+			myTriangles.add(new Triangle(varr[col][varr[0].length - 1][0],
+					varr[col][varr[0].length - 1][1],
+					varr[col + 1][varr[0].length - 1][0]));
+			myTriangles.add(new Triangle(varr[col][varr[0].length - 1][1],
+					varr[col + 1][varr[0].length - 1][1],
+					varr[col + 1][varr[0].length - 1][0]));
+		}
+
+		// make triangles for the back
+		for (int col = 0; col < varr.length - 1; col++) {
+			// add triangles for the back
+			myTriangles.add(new Triangle(varr[col][0][1], varr[col][0][0],
+					varr[col + 1][0][1]));
+			myTriangles.add(new Triangle(varr[col][0][0], varr[col + 1][0][0],
+					varr[col + 1][0][1]));
+		}
+
+		// Some of the right, front, left, and back triangles have zero
+		// area.
+		// Remove them.
+		for (int i = myTriangles.size() - 1; i >= 0; i--) {
+			Triangle t = myTriangles.get(i);
+			if (!t.hasArea())
+				myTriangles.remove(t);
+		}
+		
+		
+		
+		TriangleArray pyramidGeometry = new TriangleArray(
+				myTriangles.size() * 3, TriangleArray.COORDINATES);
+		
+		normalize();
+
+		// Vector3f[] normals = new Vector3f[myTriangles.size()];
+		for (int i = 0; i < myTriangles.size(); i++) {
+			// normals[i] = new
+			// Vector3f((float)myTriangles.get(i).getNormal().x,(float)myTriangles.get(i).getNormal().y,(float)myTriangles.get(i).getNormal().z);
+			pyramidGeometry.setCoordinate(3 * i,
+					myTriangles.get(i).v3.getPoint3f());
+			pyramidGeometry.setCoordinate(3 * i + 1,
+					myTriangles.get(i).v2.getPoint3f());
+			pyramidGeometry.setCoordinate(3 * i + 2,
+					myTriangles.get(i).v1.getPoint3f());
+		}
+
+		GeometryInfo geometryInfo = new GeometryInfo(pyramidGeometry);
+		NormalGenerator ng = new NormalGenerator();
+		ng.generateNormals(geometryInfo);
+
+		GeometryArray result = geometryInfo.getGeometryArray();
+
+		// yellow appearance
+		Appearance appearance = new Appearance();
+		Color3f color = new Color3f(Color.yellow);
+		Color3f black = new Color3f(0.0f, 0.0f, 0.0f);
+		Color3f white = new Color3f(1.0f, 1.0f, 1.0f);
+		Texture texture = new Texture2D();
+		TextureAttributes texAttr = new TextureAttributes();
+		texAttr.setTextureMode(TextureAttributes.MODULATE);
+		texture.setBoundaryModeS(Texture.WRAP);
+		texture.setBoundaryModeT(Texture.WRAP);
+		texture.setBoundaryColor(new Color4f(0.0f, 1.0f, 0.0f, 0.0f));
+		Material mat = new Material(color, black, color, white, 70f);
+		appearance.setTextureAttributes(texAttr);
+		appearance.setMaterial(mat);
+		appearance.setTexture(texture);
+		shape = new Shape3D(result, appearance);
+		group.addChild(shape);
+		// TODO take care of changing universes
+
+		// above pyramid
+		Vector3f viewTranslation = new Vector3f();
+		viewTranslation.z = 3;
+		viewTranslation.x = 0f;
+		viewTranslation.y = .3f;
+		Transform3D viewTransform = new Transform3D();
+		viewTransform.setTranslation(viewTranslation);
+		Transform3D rotation = new Transform3D();
+		rotation.rotX(-Math.PI / 12.0d);
+		rotation.mul(viewTransform);
+		universe.getViewingPlatform().getViewPlatformTransform()
+				.setTransform(rotation);
+		
+		OrbitBehavior orbit = new OrbitBehavior(this);
+		orbit.setSchedulingBounds(new BoundingSphere(new Point3d(0.0,0.0,0.0),Double.MAX_VALUE));
+		orbit.setReverseRotate(true);
+		universe.getViewingPlatform().setViewPlatformBehavior(orbit);
+
+		// lights
+		BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0),
+				1000.0);
+		Color3f light1Color = new Color3f(.7f, .7f, .7f);
+		Vector3f light1Direction = new Vector3f(4.0f, -7.0f, -12.0f);
+		DirectionalLight light1 = new DirectionalLight(light1Color,
+				light1Direction);
+		light1.setInfluencingBounds(bounds);
+		group.addChild(light1);
+		Color3f ambientColor = new Color3f(.4f, .4f, .4f);
+		AmbientLight ambientLightNode = new AmbientLight(ambientColor);
+		ambientLightNode.setInfluencingBounds(bounds);
+		group.addChild(ambientLightNode);
+		universe.addBranchGraph(group);
+	}
+
+	/**
+	 * 
+	 */
+	public void scale() {
+
+	}
+
+	public boolean hasPath() {
+		return path != null;
+	}
+
+	public String toString() {
+		// output in the ASCII STL format for a solid
+		// NOTE: Calls to this method may hang due to memory limits.
+		String output = "solid Model \n";
+		for (int i = 0; i < myTriangles.size(); i++) {
+			output += myTriangles.get(i).toString() + "\n";
+		}
+		output += "endsolid Model";
+		return output;
+	}
+	
+	public void normalize(){
+		Vertex max = new Vertex(Double.MIN_VALUE,Double.MIN_VALUE,Double.MIN_VALUE);
+		Vertex min = new Vertex(Double.MAX_VALUE,Double.MAX_VALUE,Double.MAX_VALUE);
+		ArrayList<Vertex> usedVerts = new ArrayList<Vertex>();
+		for(Triangle t : myTriangles){
+			if(! usedVerts.contains(t.v1))usedVerts.add(t.v1);
+			if(! usedVerts.contains(t.v2))usedVerts.add(t.v2);
+			if(! usedVerts.contains(t.v3))usedVerts.add(t.v3);
+		}
+		for(Vertex v : usedVerts){
+			if(v.x>max.x)max.x=v.x;
+			if(v.x<min.x)min.x=v.x;
+			if(v.y>max.y)max.y=v.y;
+			if(v.y<min.y)min.y=v.y;
+			if(v.z>max.z)max.z=v.z;
+			if(v.z<min.z)min.z=v.z;
+			// find max and min
+		}
+		Vertex scale = new Vertex(1/(max.x-min.x),1/(max.y-min.y),1/(max.z-min.z));
+		
+		System.out.println("max x:" + max.x + " max y:" + max.x + " max z:" + max.z );
+		System.out.println("min x:" + min.x + " min y:" + min.x + " min z:" + min.z );
+		System.out.println("scale x:" + scale.x + " scale y:" + scale.x + " scale z:" + scale.z );
+
+		
+		// calculate shift and scale
+		for(Vertex v : usedVerts){
+			v.normalize(min, scale);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * 
+	 * Opens file save dialog and outputs .stl file to selected location
+	 */
+	public void actionPerformed(ActionEvent arg0) {
+		Button b = (Button) arg0.getSource();
+		if (b.getLabel().equals("Write Output")) {
+			// Open Save dialog
+			JFileChooser fd = new JFileChooser();
+			fd.setFileFilter(new FileNameExtensionFilter("3D Models", "stl"));
+			fd.showSaveDialog(this);
+			PrintWriter writer;
+			try {
+				// make sure file was selected
+				if (fd.getSelectedFile() == null) {
+					path = null;
+					Runner.update();
+					return;
+				}
+				path = fd.getSelectedFile().getPath();
+				if (path.contains(".stl"))
+					writer = new PrintWriter(path, "UTF-8");
+				else
+					writer = new PrintWriter(path + ".stl", "UTF-8");
+
+				// output in the ASCII STL format for a solid
+				writer.println("solid Model");
+				for (int i = 0; i < myTriangles.size(); i++) {
+					writer.println(myTriangles.get(i).toString());
+				}
+				writer.println("endsolid Model");
+				writer.close();
+			} catch (Exception e) {
+				// Program should never reach this state.
+				JOptionPane.showMessageDialog(null,
+						"File not written, the selected file may be locked.");
+				// e.printStackTrace();
+			}
+		} else if (b.getLabel().equals("Overwrite Output")) {
+			PrintWriter writer;
+			try {
+				if (path.contains(".stl"))
+					writer = new PrintWriter(path, "UTF-8");
+				else
+					writer = new PrintWriter(path + ".stl", "UTF-8");
+
+				// output in the ASCII STL format for a solid
+				writer.println("solid Model");
+				for (int i = 0; i < myTriangles.size(); i++) {
+					writer.println(myTriangles.get(i).toString());
+				}
+				writer.println("endsolid Model");
+				writer.close();
+			} catch (Exception e) {
+				// Program should never reach this state.
+				JOptionPane.showMessageDialog(null,
+						"File not written, the selected file may be locked.");
+				// e.printStackTrace();
+			}
+		}
+		Runner.update();
+
+	}
+
+}

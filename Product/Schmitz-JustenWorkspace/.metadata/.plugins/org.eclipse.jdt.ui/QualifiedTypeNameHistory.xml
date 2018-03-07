@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
+<fullyQualifiedTypeName name="java.awt.Button"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="java.awt.Label"/>
+<fullyQualifiedTypeName name="javax.vecmath.Point3f"/>
+<fullyQualifiedTypeName name="javax.media.j3d.BranchGroup"/>
+<fullyQualifiedTypeName name="javax.media.j3d.PolygonAttributes"/>
+<fullyQualifiedTypeName name="com.sun.j3d.utils.behaviors.vp.OrbitBehavior"/>
+<fullyQualifiedTypeName name="javax.media.j3d.Canvas3D"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.util.Set"/>
+<fullyQualifiedTypeName name="javax.swing.event.ChangeListener"/>
+<fullyQualifiedTypeName name="javax.swing.JSlider"/>
+<fullyQualifiedTypeName name="javax.media.j3d.Transform3D"/>
+<fullyQualifiedTypeName name="javax.vecmath.GMatrix"/>
+<fullyQualifiedTypeName name="javax.media.j3d.TransformGroup"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="com.sun.j3d.utils.geometry.NormalGenerator"/>
+<fullyQualifiedTypeName name="java.text.DecimalFormat"/>
+</qualifiedTypeNameHistroy>
